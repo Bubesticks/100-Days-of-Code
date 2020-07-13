@@ -1,0 +1,40 @@
+#Load relevant libraries 
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+
+#load data set
+library(readxl)
+X100DC <- read_excel()
+View(X100DC)
+
+#view NAs in dataset
+colSums(is.na(X100DC))
+
+#remove rows which contain NAs
+clean <- na.omit(X100DC)
+
+# view new dataset
+View(clean)
+
+#check the number of rows
+nrow(clean)
+
+#create time column for BCG in days
+tbcg <- (clean$DBCG -clean$DOB)
+clean$TBCG <-tbcg/86400
+
+#create time columns for penta vaccines in weeks
+tpenta1 <- (clean$DP1 - clean$DOB)
+clean$Penta1 <- round((tpenta1/7), digits=1)
+ 
+tpenta2 <- (clean$DP2 - clean$DP1)
+clean$TPenta2 <-round((tpenta2/604800), digits=1)
+
+tpenta3 <- clean$DP3 - clean$DP2
+clean$TPenta3 <-round((tpenta3/604800), digits=1)
+ 
+# create timeliness column for measles in weeks 
+tmeasles <- clean$DM - clean$DOB
+clean$Tmeasles <-round((tmeasles/7), digits=1)
